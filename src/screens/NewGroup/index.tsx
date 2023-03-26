@@ -5,14 +5,26 @@ import { HightLight } from "@components/HightLight";
 import { Input } from "@components/Input";
 import * as S from "./styles";
 import { useNavigation } from "@react-navigation/native";
+import { groupCreate } from "@storage/group/groupCreate";
+import { AppError } from "@utils/AppError";
+import { Alert } from "react-native";
 
 export function NewGroup() {
   const [group, setGroup] = useState("");
 
   const navigation = useNavigation();
 
-  function handleCreateGroup() {
-    navigation.navigate("players", { group });
+  async function handleCreateGroup() {
+    try {
+      await groupCreate(group);
+      navigation.navigate("players", { group });
+    } catch (error) {
+      if (error instanceof AppError) {
+        Alert.alert("Ooops", error.message);
+      } else {
+        Alert.alert("Ooops", "Não foi possível criar um novo grupo.");
+      }
+    }
   }
 
   return (
