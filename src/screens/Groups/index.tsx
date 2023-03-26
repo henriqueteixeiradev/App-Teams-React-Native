@@ -6,6 +6,7 @@ import { HightLight } from "@components/HightLight";
 import { ListEmpty } from "@components/ListEmpty";
 
 import * as S from "./styles";
+import { Button } from "@components/Button";
 
 export function Groups() {
   const [groups, setGroups] = useState<string[]>([
@@ -13,10 +14,6 @@ export function Groups() {
     "Grupo da Iolanda",
     "Grupo da Karolyna",
     "Grupo do Mikael",
-    "Grupo da Quitéria",
-    "Grupo do Bruno",
-    "Grupo da Teté",
-    "Grupo da Buluga",
   ]);
 
   return (
@@ -32,6 +29,8 @@ export function Groups() {
           <ListEmpty message="Que tal cadastrar a primeira turma?" />
         )}
       />
+
+      <Button title="Criar nova turma" />
     </S.Container>
   );
 }
