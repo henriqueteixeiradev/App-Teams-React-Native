@@ -6,6 +6,7 @@ import { Header } from "@components/Header";
 import { HightLight } from "@components/HightLight";
 import { Input } from "@components/Input";
 import * as S from "./styles";
+import { PlayerCard } from "@components/PlayerCard";
 
 export function Players() {
   const [team, setTeam] = useState("");
@@ -48,6 +49,14 @@ export function Players() {
         />
         <S.NumberOfPlayers>{players.length}</S.NumberOfPlayers>
       </S.HeaderList>
+
+      <FlatList
+        data={players}
+        keyExtractor={(item) => item}
+        renderItem={({ item }) => (
+          <PlayerCard name={item} onRemove={() => {}} />
+        )}
+      />
     </S.Container>
   );
 }
