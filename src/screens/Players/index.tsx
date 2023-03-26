@@ -1,4 +1,5 @@
 import { ButtonIcon } from "@components/ButtonIcon";
+import { Filter } from "@components/Filter";
 import { Header } from "@components/Header";
 import { HightLight } from "@components/HightLight";
 import { Input } from "@components/Input";
@@ -17,6 +18,8 @@ export function Players() {
         <Input placeholder="Nome do jogador" autoCorrect={false} />
         <ButtonIcon icon="add" />
       </S.Form>
+
+      <Filter title="Time A" isActive />
     </S.Container>
   );
 }
