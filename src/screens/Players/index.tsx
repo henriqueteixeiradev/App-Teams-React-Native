@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Alert } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { Alert, TextInput, Keyboard } from "react-native";
 import * as S from "./styles";
 import { useRoute } from "@react-navigation/native";
 import { FlatList } from "react-native";
@@ -15,6 +15,7 @@ import { AppError } from "@utils/AppError";
 import { playerAddByGroup } from "@storage/player/playerAddByGroup";
 import { playersGetByGroupAndTeam } from "@storage/player/playersGetByGroupAndTeam";
 import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
+import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
 
 type RouteParams = {
   group: string;
@@ -24,6 +25,8 @@ export function Players() {
   const [newPlayerName, setNewPlayerName] = useState("");
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
+
+  const newPlayerNameInputRef = useRef<TextInput>(null);
 
   const route = useRoute();
 
@@ -45,6 +48,14 @@ export function Players() {
 
     try {
       await playerAddByGroup(newPlayer, group);
+
+      newPlayerNameInputRef.current?.blur();
+
+      Keyboard.dismiss();
+
+      setNewPlayerName("");
+
+      fetchPlayersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert("Ooops", error.message);
@@ -64,9 +75,17 @@ export function Players() {
     }
   }
 
-  useEffect(() => {
-    console.log("useEffect");
+  async function handleRemovePlayer(playerName: string) {
+    try {
+      await playerRemoveByGroup(playerName, group);
+      fetchPlayersByTeam();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Ooops", "Não foi possível remover o jogador.");
+    }
+  }
 
+  useEffect(() => {
     fetchPlayersByTeam();
   }, [team]);
 
@@ -84,6 +103,9 @@ export function Players() {
           autoCorrect={false}
           value={newPlayerName}
           onChangeText={setNewPlayerName}
+          inputRef={newPlayerNameInputRef}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType="done"
         />
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
       </S.Form>
@@ -109,7 +131,12 @@ export function Players() {
         data={players}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <PlayerCard name={item.name} onRemove={() => {}} />
+          <PlayerCard
+            name={item.name}
+            onRemove={() => {
+              handleRemovePlayer(item.name);
+            }}
+          />
         )}
         ListEmptyComponent={() => (
           <ListEmpty message="Não há pessoas nesse time" />
