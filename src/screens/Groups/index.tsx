@@ -12,12 +12,7 @@ import * as S from "./styles";
 import { Button } from "@components/Button";
 
 export function Groups() {
-  const [groups, setGroups] = useState<string[]>([
-    "Grupo do biricu",
-    "Grupo da Iolanda",
-    "Grupo da Karolyna",
-    "Grupo do Mikael",
-  ]);
+  const [groups, setGroups] = useState<string[]>([]);
 
   const navigation = useNavigation();
 
