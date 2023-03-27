@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
+import { Alert, TextInput, Keyboard } from "react-native";
 import { Button } from "@components/Button";
 import { Header } from "@components/Header";
 import { HightLight } from "@components/HightLight";
 import { Input } from "@components/Input";
 import * as S from "./styles";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { groupCreate } from "@storage/group/groupCreate";
 import { AppError } from "@utils/AppError";
-import { Alert } from "react-native";
 
 export function NewGroup() {
   const [group, setGroup] = useState("");
+
+  const newGroupNameInputRef = useRef<TextInput>(null);
 
   const navigation = useNavigation();
 
@@ -27,6 +29,12 @@ export function NewGroup() {
     }
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      newGroupNameInputRef.current?.focus();
+    }, [])
+  );
+
   return (
     <S.Container>
       <Header showbackButton />
@@ -38,9 +46,12 @@ export function NewGroup() {
           subtitle="Crie a turma para adicionar as pessoas"
         />
         <Input
+          inputRef={newGroupNameInputRef}
           placeholder="Nome da turma"
           onChangeText={setGroup}
           value={group}
+          onSubmitEditing={handleCreateGroup}
+          returnKeyType="done"
         />
         <Button
           title="Criar"
